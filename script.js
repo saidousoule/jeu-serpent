@@ -67,7 +67,7 @@ window.onload = function()
             var nextPosition = this.body[0].slice();
             switch(this.direction)
             {
-                case "letf":
+                case "left":
                     nextPosition[0] -= 1;
                     break;
                 case "right":
@@ -91,7 +91,7 @@ window.onload = function()
             var allowedDirections;
             switch(this.direction)
             {
-                case "letf":
+                case "left":
                 case "right":
                     allowedDirections = ["up", "down"];
                     break;
@@ -112,9 +112,9 @@ window.onload = function()
     //A chaque fois qu'on va apuiyer sur les clavier c'est cette partie du code qui va intervenir.
    document.onkeydown = function handleKeyDown(e)
    {
-    var Key = e.KeyCode;
+    var key = e.keyCode;
     var newDirection;
-    switch(Key)
+    switch(key)
      {
         case 37:
             newDirection = "left";
