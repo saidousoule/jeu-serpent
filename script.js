@@ -8,6 +8,9 @@ window.onload = function()
     var ctx;
     var delay = 100;
     var snakee;
+    var applee;
+    var widthInBlocks = canvasWidth/blockSize;
+    var heightInBlocks = canvasHeight/blockSize;
     
     init();
 
@@ -25,18 +28,29 @@ window.onload = function()
         ctx = canvas.getContext('2d');
         //création du snake le tableau définis l'emplacement que prendra le snake
         snakee = new Snake([[6,4], [5,4], [4,4]], "right");
+        applee = new Apple([10,10]);
         refreshCanvas();
+
     }   
 
 
    function refreshCanvas()
    {    
+        snakee.advance();
+        if(snakee.checkCollision())
+        {
+            //GAME OVER
+        }
+        else
+        {
         //le x et le y vont bouger a chaque fois que la page va se rafraichire
         //permet d'effacer toute la largeur et la hauteur du canvas
         ctx.clearRect(0,0,canvasWidth, canvasHeight);
-        snakee.advance();
         snakee.draw();
+        applee.draw();
         setTimeout(refreshCanvas,delay);
+        }
+       
    }
 
    function drawBlock(ctx, position)
@@ -107,6 +121,51 @@ window.onload = function()
                 this.direction = newDirection;
             }
         };
+        this.checkCollision = function()
+        {
+            var wallCollision = false;
+            var snakeCollision = false;
+            var head = this.body[0];
+            var rest = this.body.slice(1);
+            var snakeX = head[0];
+            var snakeY = head[1]; 
+            var minX = 0;
+            var minY = 0;
+            var maxX = widthInBlocks -1;
+            var maxY = heightInBlocks -1;
+            var isNotBetweenHorizontalWalls = snakeX < minX || snakeX > maxX;
+            var isNotBetweenVerticalWalls = snakeY < minY || snakeY > maxY;
+
+            if(isNotBetweenHorizontalWalls || isNotBetweenVerticalWalls)
+            {
+                wallCollision = true;
+            }
+
+            for(var i = 0; i < rest.length ; i++)
+            {
+                if(snakeX === rest[i][0] && snakeY === rest[i][1] )
+                {
+                    snakeCollision = true; 
+                }
+            }
+
+            return wallCollision || snakeCollision;
+        };
+   }
+
+   function Apple(position){
+        this.position = position;
+        this.draw = function(){
+            ctx.save();
+            ctx.fillStyle ="#33cc33";
+            ctx.beginPath();
+            var radius = blockSize/2;
+            var x = position[0]*blockSize + radius;
+            var y = position[1]*blockSize + radius; 
+            ctx.arc(x, y,radius , 0,Math.PI*2, true);
+            ctx.fill();
+            ctx.restore();
+        }
    }
 
     //A chaque fois qu'on va apuiyer sur les clavier c'est cette partie du code qui va intervenir.
